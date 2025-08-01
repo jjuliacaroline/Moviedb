@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}Elokuvat{% endblock %}
+
+{% block content %}
+<h2>Elokuvat</h2>
+
+{% for movie in movies %}
+<div class="movie">
+  <a href="/movie/{{ movie.id }}">{{ movie.title }}</a> <br />
+  Lisääjä: <a href="/user/{{ movie.user_id }}">{{ movie.username }}</a> <br />
+  Arvioiden määrä: {{ movie.rating_count }}
+</div>
+{% endfor %}
+{% endblock %}

@@ -11,3 +11,24 @@ The application allows users to share their movie recommendations. Each recommen
 - Users can rate movies and leave comments. The movie page displays comments and the average rating.
 
 The primary data entity is the movie, and the secondary data entity is the review related to the movie.
+
+## Installing and Running the Application
+
+Install Flask:
+
+```bash
+pip install flask
+```
+
+Create the database:
+
+```bash
+sqlite3 database.db < schema.sql
+sqlite3 database.db < init.sql
+```
+
+Start the application:
+
+```bash
+flask run
+```

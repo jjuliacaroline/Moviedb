@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}Elokuvan muokkaus{% endblock %}
+
+{% block content %}
+<h2>{{ movie.title }}</h2>
+<h3>Muokkaa elokuvaa</h3>
+<form action="/update_movie" method="post">
+  <p>
+    <label for="title">Nimi</label>: <br />
+    <input type="text" name="title" id="title" value="{{ movie.title }}" maxlength="100" required />
+  </p>
+  <p>
+    <label for="description">Kuvaus</label>: <br />
+    <textarea name="description" id="description" rows="8" cols="60" maxlength="2000" required>{{ movie.description }}</textarea>
+  </p>
+  <p>
+    <label for="year">Julkaisuvuosi</label>: <br />
+    <input type="number" name="year" id="year" value="{{ movie.year }}" min="1888" max="2100" required />
+  </p>
+  <input type="hidden" name="movie_id" value="{{ movie.id }}" />
+  {% for category in all_categories %}
+  <p>
+    <label for="category{{ category }}">{{ category }}</label>: <br />
+    <select name="categories" id="category{{ category }}">
+      <option value="">(valitse)</option>
+    {% for option in all_categories[category] %}
+      {% if categories[category] == option %}
+      <option value="{{ category }}:{{ option }}" selected>{{ option }}</option>
+      {% else %}
+      <option value="{{ category }}:{{ option }}">{{ option }}</option>
+      {% endif %}
+    {% endfor %}
+    </select>
+  </p>
+  {% endfor %}
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  <input type="submit" value="Päivitä elokuvan tiedot" />
+</form>
+<p>
+  <a href="/movie/{{ movie.id }}">Palaa takaisin</a>
+</p>
+{% endblock %}

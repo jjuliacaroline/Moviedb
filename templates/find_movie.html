@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}Etsi elokuva{% endblock %}
+
+{% block content %}
+<h2>Etsi elokuva</h2>
+
+<form action="/find_movie" method="get">
+  <p>
+    <label for="query">Hakusana</label>:
+    <input type="text" name="query" id="query" value="{{ query }}">
+  </p>
+  <input type="submit" value="Hae">
+</form>
+
+{% if query %}
+<h3>Tulokset</h3>
+
+<ul>
+  {% for movie in results %}
+  <li><a href="/movie/{{ movie.id }}">{{ movie.title }}</a></li>
+  {% else %}
+  <li>Hakusanalla "{{ query }}" ei löytynyt elokuvia</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

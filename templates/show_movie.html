@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<h2>{{ movie.title }}</h2>
+{% if session.user_id == movie.user_id %}
+<p>
+  <a href="/edit_movie/{{ movie.id }}">Muokkaa</a>
+  <a href="/remove_movie/{{ movie.id }}">Poista</a>
+</p>
+{% endif %}
+
+<p>
+  {{ movie.description | show_lines }}
+</p>
+
+<ul>
+  <li>Julkaisuvuosi: {{ movie.release_year }}</li>
+  <li>Arvioija: <a href="/user/{{ movie.user_id }}">{{ movie.username }}</a></li>
+</ul>
+
+<h3>Genret</h3>
+<ul>
+  {% for genre in genres %}
+  <li>{{ genre.title }}</li>
+  {% endfor %}
+</ul>
+
+<h3>Arviot</h3>
+<ul>
+  {% for rating in ratings %}
+  <li>{{ rating.rating }} / 5, arvioija: <a href="/user/{{ rating.user_id }}">{{ rating.username }}</a></li>
+  {% endfor %}
+</ul>
+
+{% if session.user_id %}
+<h3>Lisää arvio</h3>
+<form action="/add_rating" method="post">
+  <label for="rating">Anna arvosana (1–5):</label>
+  <input type="number" id="rating" name="rating" min="1" max="5" required />
+  <input type="hidden" name="movie_id" value="{{ movie.id }}" />
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  <input type="submit" value="Lisää arvio" />
+</form>
+{% endif %}
+{% endblock %}
