@@ -149,13 +149,21 @@ def register():
 
 @app.route("/create", methods=["POST"])
 def create():
-    username = request.form["username"]
-    password1 = request.form["password1"]
-    password2 = request.form["password2"]
-    if password1 != password2:
-        flash("VIRHE: salasanat eivät ole samat")
+    username = request.form.get("username", "").strip()
+    password1 = request.form.get("password1", "").strip()
+    password2 = request.form.get("password2", "").strip()
+
+    if not username:
+        flash("VIRHE: Käyttäjätunnus ei voi olla tyhjä")
         return redirect("/register")
 
+    if not password1 or not password2:
+        flash("VIRHE: Salasana ei voi olla tyhjä")
+        return redirect("/register")
+
+    if password1 != password2:
+        flash("VIRHE: Salasanat eivät ole samat")
+        return redirect("/register")
     try:
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
