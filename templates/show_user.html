@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}Käyttäjä {{ user.username }}{% endblock %}
+
+{% block content %}
+<h2>Käyttäjä {{ user.username }}</h2>
+<p>
+  Käyttäjä on lisännyt yhteensä {{ movies | count }} elokuvaa.
+</p>
+
+<h3>Lisätyt elokuvat</h3>
+<ul>
+  {% for movie in movies %}
+  <li><a href="/movie/{{ movie.id }}">{{ movie.title }}</a> ({{ movie.release_year }})</li>
+  {% else %}
+  <li>Ei elokuvia.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

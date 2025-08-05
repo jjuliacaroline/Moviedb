@@ -10,7 +10,9 @@ def get_connection():
 def execute(sql, params=[]):
     with get_connection() as con:
         cur = con.execute(sql, params)
+        con.commit()
         g.last_insert_id = cur.lastrowid
+        return cur
 
 def last_insert_id():
     return getattr(g, "last_insert_id", None)

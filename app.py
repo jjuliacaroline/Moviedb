@@ -38,7 +38,8 @@ def show_movie(movie_id):
     if not movie:
         abort(404)
     genres = movies.get_genres(movie_id)
-    return render_template("show_movie.html", movie=movie, genres=genres)
+    ratings = movies.get_ratings_for_movie(movie_id)
+    return render_template("show_movie.html", movie=movie, genres=genres, ratings=ratings)
 
 @app.route("/find_movie")
 def find_movie():
@@ -76,9 +77,8 @@ def create_movie():
     genre_ids = [int(gid) for gid in genre_ids if gid.isdigit()]
 
     movies.add_movie(title, description, int(release_year), user_id, genre_ids)
-
-    movie_id = db.last_insert_id()
-    return redirect("/movie/" + str(movie_id))
+    movie_id = movies.add_movie(title, description, int(release_year), user_id, genre_ids)
+    return redirect(f"/movie/{movie_id}")
 
 @app.route("/edit_movie/<int:movie_id>")
 def edit_movie(movie_id):
@@ -195,3 +195,36 @@ def logout():
         del session["user_id"]
         del session["username"]
     return redirect("/")
+
+@app.route("/user/<int:user_id>")
+def user_page(user_id):
+    user = users.get_user(user_id)
+    if not user:
+        abort(404)
+    movies_by_user = movies.get_movies_by_user(user_id)
+    return render_template("user_page.html", user=user, movies=movies_by_user)
+
+@app.route("/add_rating", methods=["POST"])
+def add_rating():
+    require_login()
+    check_csrf()
+
+    rating = request.form["rating"]
+    movie_id = request.form["movie_id"]
+
+    if not rating.isdigit() or not movie_id.isdigit():
+        abort(400)
+
+    rating = int(rating)
+    if rating < 1 or rating > 5:
+        abort(400)
+
+    user_id = session["user_id"]
+
+    sql = """
+        INSERT INTO ratings (user_id, movie_id, rating)
+        VALUES (?, ?, ?)
+    """
+    db.execute(sql, [user_id, movie_id, rating])
+    return redirect(f"/movie/{movie_id}")
+

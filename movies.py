@@ -2,17 +2,17 @@ import db
 
 def get_all_genres():
     sql = "SELECT id, title FROM genres ORDER BY id"
-    return db.query(sql)
+    return db.query(sql)    
 
 def add_movie(title, description, release_year, user_id, genre_ids):
     sql = "INSERT INTO movies (title, description, release_year, user_id) VALUES (?, ?, ?, ?)"
-    db.execute(sql, [title, description, release_year, user_id])
-
-    movie_id = db.last_insert_id()
+    curr = db.execute(sql, [title, description, release_year, user_id])
+    movie_id = curr.lastrowid
 
     sql = "INSERT INTO movie_genres (movie_id, genre_id) VALUES (?, ?)"
     for gid in genre_ids:
         db.execute(sql, [movie_id, gid])
+    return movie_id
 
 def get_movies():
     sql = "SELECT id, title, description, release_year, user_id FROM movies ORDER BY title"
@@ -86,6 +86,28 @@ def find_movies(query):
         ORDER BY title
     """
     movies = db.query(sql, [like_query])
+    for movie in movies:
+        movie['genres'] = get_genres_for_movie(movie['id'])
+        movie['avg_rating'] = get_avg_rating_for_movie(movie['id'])
+    return movies
+
+def get_ratings_for_movie(movie_id):
+    sql = """
+        SELECT r.rating, r.user_id, u.username
+        FROM ratings r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.movie_id = ?
+    """
+    return db.query(sql, [movie_id])
+
+def get_movies_by_user(user_id):
+    sql = """
+    SELECT id, title, description, release_year, user_id
+    FROM movies
+    WHERE user_id = ?
+    ORDER BY title
+    """
+    movies = db.query(sql, [user_id])
     for movie in movies:
         movie['genres'] = get_genres_for_movie(movie['id'])
         movie['avg_rating'] = get_avg_rating_for_movie(movie['id'])
