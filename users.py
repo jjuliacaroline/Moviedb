@@ -23,3 +23,16 @@ def check_login(username, password):
         return user_id
     else:
         return None
+
+def get_user_stats(user_id):
+    sql_movies = "SELECT COUNT(*) as count FROM movies WHERE user_id = ?"
+    movies_count = db.query(sql_movies, [user_id])[0]['count']
+
+    sql_ratings = "SELECT AVG(r.rating) as avg_rating FROM ratings r WHERE r.user_id = ?"
+    avg_rating_res = db.query(sql_ratings, [user_id])
+    avg_rating = round(avg_rating_res[0]['avg_rating'], 2) if avg_rating_res and avg_rating_res[0]['avg_rating'] else None
+
+    return {
+        "movies_count": movies_count,
+        "avg_rating": avg_rating
+    }

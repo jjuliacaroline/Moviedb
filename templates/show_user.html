@@ -4,8 +4,18 @@
 
 {% block content %}
 <h2>Käyttäjä {{ user.username }}</h2>
+
 <p>
-  Käyttäjä on lisännyt yhteensä {{ movies | count }} elokuvaa.
+  Käyttäjä on lisännyt yhteensä {{ movies | length }} elokuvaa.
+</p>
+
+<p>
+  Käyttäjän antamien arvioiden keskiarvo: 
+  {% if stats.avg_rating %}
+    {{ stats.avg_rating }}
+  {% else %}
+    Ei arvioita
+  {% endif %}
 </p>
 
 <h3>Lisätyt elokuvat</h3>

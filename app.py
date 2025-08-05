@@ -202,7 +202,8 @@ def user_page(user_id):
     if not user:
         abort(404)
     movies_by_user = movies.get_movies_by_user(user_id)
-    return render_template("user_page.html", user=user, movies=movies_by_user)
+    stats = users.get_user_stats(user_id)
+    return render_template("show_user.html", user=user, movies=movies_by_user, stats=stats)
 
 @app.route("/add_rating", methods=["POST"])
 def add_rating():
@@ -227,4 +228,3 @@ def add_rating():
     """
     db.execute(sql, [user_id, movie_id, rating])
     return redirect(f"/movie/{movie_id}")
-
