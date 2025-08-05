@@ -180,9 +180,6 @@ def login():
             session["username"] = username
             session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
-        else:
-            flash("VIRHE: väärä tunnus tai salasana")
-            return redirect("/login")
 
 @app.route("/logout")
 def logout():
