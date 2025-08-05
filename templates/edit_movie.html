@@ -18,22 +18,17 @@
     <label for="year">Julkaisuvuosi</label>: <br />
     <input type="number" name="year" id="year" value="{{ movie.year }}" min="1888" max="2100" required />
   </p>
-  <input type="hidden" name="movie_id" value="{{ movie.id }}" />
-  {% for category in all_categories %}
-  <p>
-    <label for="category{{ category }}">{{ category }}</label>: <br />
-    <select name="categories" id="category{{ category }}">
-      <option value="">(valitse)</option>
-    {% for option in all_categories[category] %}
-      {% if categories[category] == option %}
-      <option value="{{ category }}:{{ option }}" selected>{{ option }}</option>
-      {% else %}
-      <option value="{{ category }}:{{ option }}">{{ option }}</option>
-      {% endif %}
-    {% endfor %}
-    </select>
-  </p>
+  
+  <p>Genret:</p>
+  {% for genre in all_genres %}
+    <label>
+      <input type="checkbox" name="genres" value="{{ genre.id }}"
+        {% if genre.id in movie_genres %}checked{% endif %}>
+      {{ genre.title }}
+    </label><br>
   {% endfor %}
+
+  <input type="hidden" name="movie_id" value="{{ movie.id }}" />
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" value="Päivitä elokuvan tiedot" />
 </form>

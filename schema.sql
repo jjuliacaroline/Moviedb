@@ -1,10 +1,10 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
     username TEXT UNIQUE,
     password_hash TEXT
 );
 
-CREATE TABLE movies (
+CREATE TABLE IF NOT EXISTS movies (
     id INTEGER PRIMARY KEY,
     title TEXT,
     description TEXT,
@@ -12,18 +12,18 @@ CREATE TABLE movies (
     user_id INTEGER REFERENCES users
 );
 
-CREATE TABLE genres (
+CREATE TABLE IF NOT EXISTS genres (
     id INTEGER PRIMARY KEY,
     title TEXT UNIQUE
 );
 
-CREATE TABLE movie_genres (
+CREATE TABLE IF NOT EXISTS movie_genres (
     id INTEGER PRIMARY KEY,
     movie_id INTEGER REFERENCES movies,
     genre_id INTEGER REFERENCES genres
 );
 
-CREATE TABLE ratings (
+CREATE TABLE IF NOT EXISTS ratings (
     id INTEGER PRIMARY KEY,
     movie_id INTEGER REFERENCES movies,
     user_id INTEGER REFERENCES users,

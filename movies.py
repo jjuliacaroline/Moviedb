@@ -2,15 +2,7 @@ import db
 
 def get_all_genres():
     sql = "SELECT id, title FROM genres ORDER BY id"
-    result = db.query(sql)
-
-    genres = {}
-    for genre_id, title in result:
-        genres[title] = []
-    for genre_id, title in result:
-        genres[title].append(genre_id)
-
-    return genres
+    return db.query(sql)
 
 def add_movie(title, description, release_year, user_id, genre_ids):
     sql = "INSERT INTO movies (title, description, release_year, user_id) VALUES (?, ?, ?, ?)"

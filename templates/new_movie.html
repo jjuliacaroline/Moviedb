@@ -14,19 +14,13 @@
     <textarea name="description" id="description" rows="8" cols="60" maxlength="2000" required></textarea>
   </p>
   <p>
-    <label for="year">Julkaisuvuosi:</label> <br />
-    <input type="number" name="year" id="year" min="1888" max="2100" required />
+    <label for="release_year">Julkaisuvuosi:</label> <br />
+    <input type="number" name="release_year" id="release_year" min="1888" max="2100" required />
   </p>
-  {% for category in categories %}
-  <p>
-    <label for="category{{ category }}">{{ category }}</label>: <br />
-    <select name="categories" id="category{{ category }}">
-      <option value="">(valitse)</option>
-    {% for option in categories[category] %}
-      <option value="{{ category }}:{{ option }}">{{ option }}</option>
-    {% endfor %}
-    </select>
-  </p>
+  <p>Valitse genret:</p>
+  {% for genre in genres %}
+    <input type="checkbox" name="genres" value="{{ genre.id }}" id="genre{{ genre.id }}" />
+    <label for="genre{{ genre.id }}">{{ genre.title }}</label><br />
   {% endfor %}
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" value="Lisää elokuva" />
