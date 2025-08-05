@@ -148,8 +148,7 @@ def remove_movie(movie_id):
         if "remove" in request.form:
             movies.remove_movie(movie_id)
             return redirect("/")
-        else:
-            return redirect("/movie/" + str(movie_id))
+        return redirect("/movie/" + str(movie_id))
 
 @app.route("/register")
 def register():
