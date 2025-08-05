@@ -39,7 +39,15 @@ def show_movie(movie_id):
         abort(404)
     genres = movies.get_genres(movie_id)
     ratings = movies.get_ratings_for_movie(movie_id)
-    return render_template("show_movie.html", movie=movie, genres=genres, ratings=ratings)
+    sql = """
+        SELECT c.content, u.username
+        FROM comments c
+        JOIN users u ON c.user_id = u.id
+        WHERE c.movie_id = ?
+        ORDER BY c.created_at DESC
+    """
+    comments = db.query(sql, [movie_id])
+    return render_template("show_movie.html", movie=movie, genres=genres, ratings=ratings, comments=comments)
 
 @app.route("/find_movie")
 def find_movie():
@@ -227,4 +235,19 @@ def add_rating():
         VALUES (?, ?, ?)
     """
     db.execute(sql, [user_id, movie_id, rating])
+    return redirect(f"/movie/{movie_id}")
+
+@app.route("/add_comment", methods=["POST"])
+def add_comment():
+    require_login()
+    check_csrf()
+
+    movie_id = request.form.get("movie_id")
+    content = request.form.get("content", "").strip()
+    if not content:
+        flash("Kommentti ei voi olla tyhjä")
+        return redirect(f"/movie/{movie_id}")
+
+    sql = "INSERT INTO comments (user_id, movie_id, content) VALUES (?, ?, ?)"
+    db.execute(sql, [session["user_id"], movie_id, content])
     return redirect(f"/movie/{movie_id}")

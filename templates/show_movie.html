@@ -44,4 +44,18 @@
   <input type="submit" value="Lisää arvio" />
 </form>
 {% endif %}
+<h3>Kommentit</h3>
+{% for comment in comments %}
+  <p><strong>{{ comment.username }}:</strong> {{ comment.content|show_lines }}</p>
+{% else %}
+  <p>Ei kommentteja.</p>
+{% endfor %}
+
+<form method="post" action="/add_comment">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+  <input type="hidden" name="movie_id" value="{{ movie.id }}">
+  <textarea name="content" required></textarea><br>
+  <button type="submit">Lisää kommentti</button>
+</form>
+
 {% endblock %}
