@@ -84,7 +84,6 @@ def create_movie():
     genre_ids = request.form.getlist("genres")
     genre_ids = [int(gid) for gid in genre_ids if gid.isdigit()]
 
-    movies.add_movie(title, description, int(release_year), user_id, genre_ids)
     movie_id = movies.add_movie(title, description, int(release_year), user_id, genre_ids)
     return redirect(f"/movie/{movie_id}")
 
