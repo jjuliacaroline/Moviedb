@@ -229,6 +229,13 @@ def add_rating():
 
     user_id = session["user_id"]
 
+    check_sql = "SELECT id FROM ratings WHERE user_id = ? AND movie_id = ?"
+    existing = db.query(check_sql, [user_id, movie_id])
+   
+    if existing:
+        flash("Olet jo arvioinut tämän elokuvan")
+        return redirect(f"/movie/{movie_id}")
+
     sql = """
         INSERT INTO ratings (user_id, movie_id, rating)
         VALUES (?, ?, ?)
