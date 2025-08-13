@@ -15,7 +15,15 @@ def add_movie(title, description, release_year, user_id, genre_ids):
     return movie_id
 
 def get_movies():
-    sql = "SELECT id, title, description, release_year, user_id FROM movies ORDER BY title"
+    sql = """
+        SELECT m.id, m.title, m.description, m.release_year, m.user_id, u.username,
+               COUNT(r.id) as rating_count
+        FROM movies m
+        LEFT JOIN users u ON m.user_id = u.id
+        LEFT JOIN ratings r ON m.id = r.movie_id
+        GROUP BY m.id, m.title, m.description, m.release_year, m.user_id, u.username
+        ORDER BY m.title
+    """
     movies = db.query(sql)
 
     for movie in movies:
