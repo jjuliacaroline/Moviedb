@@ -65,6 +65,8 @@ def remove_movie(movie_id):
     db.execute(sql, [movie_id])
     sql = "DELETE FROM ratings WHERE movie_id = ?"
     db.execute(sql, [movie_id])
+    sql = "DELETE FROM comments WHERE movie_id = ?"
+    db.execute(sql, [movie_id])
     sql = "DELETE FROM movies WHERE id = ?"
     db.execute(sql, [movie_id])
 
