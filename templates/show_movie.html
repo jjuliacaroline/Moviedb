@@ -73,7 +73,8 @@
 <form method="post" action="/add_comment">
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
   <input type="hidden" name="movie_id" value="{{ movie.id }}">
-  <textarea name="content" required></textarea><br>
+  <label for="comment">Kommentti:</label><br>
+  <textarea name="content" id="comment" required></textarea><br>
   <button type="submit">Lisää kommentti</button>
 </form>
 
