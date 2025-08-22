@@ -153,20 +153,20 @@ def create():
 
     if not username:
         flash("VIRHE: Käyttäjätunnus ei voi olla tyhjä")
-        return redirect("/register")
+        return render_template("register.html", username=username)
 
     if not password1 or not password2:
         flash("VIRHE: Salasana ei voi olla tyhjä")
-        return redirect("/register")
+        return render_template("register.html", username=username)
 
     if password1 != password2:
         flash("VIRHE: Salasanat eivät ole samat")
-        return redirect("/register")
+        return render_template("register.html", username=username)
     try:
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
         flash("VIRHE: tunnus on jo varattu")
-        return redirect("/register")
+        return render_template("register.html", username=username)
 
     flash("Käyttäjä luotu! Kirjaudu sisään.")
     return redirect("/login")
