@@ -186,6 +186,9 @@ def login():
             session["username"] = username
             session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
+        
+        flash("Väärä käyttäjätunnus tai salasana")
+        return render_template("login.html", username=username)
 
 @app.route("/logout")
 def logout():
