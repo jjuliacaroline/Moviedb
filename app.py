@@ -4,7 +4,6 @@ from flask import Flask, abort, flash, redirect, render_template, request, sessi
 import markupsafe
 
 import config
-import db
 import movies
 import users
 
@@ -39,14 +38,7 @@ def show_movie(movie_id):
         abort(404)
     genres = movies.get_genres(movie_id)
     ratings = movies.get_ratings_for_movie(movie_id)
-    sql = """
-        SELECT c.content, u.username
-        FROM comments c
-        JOIN users u ON c.user_id = u.id
-        WHERE c.movie_id = ?
-        ORDER BY c.created_at DESC
-    """
-    comments = db.query(sql, [movie_id])
+    comments = movies.get_comments_for_movie(movie_id)
     return render_template("show_movie.html", movie=movie, genres=genres, ratings=ratings, comments=comments)
 
 @app.route("/find_movie")
@@ -227,19 +219,13 @@ def add_rating():
         abort(400)
 
     user_id = session["user_id"]
-
-    check_sql = "SELECT id FROM ratings WHERE user_id = ? AND movie_id = ?"
-    existing = db.query(check_sql, [user_id, movie_id])
+    existing = movies.get_user_rating(user_id, movie_id)
    
     if existing:
         flash("Olet jo arvioinut tämän elokuvan")
         return redirect(f"/movie/{movie_id}")
 
-    sql = """
-        INSERT INTO ratings (user_id, movie_id, rating)
-        VALUES (?, ?, ?)
-    """
-    db.execute(sql, [user_id, movie_id, rating])
+    movies.add_rating(user_id, movie_id, rating)
     return redirect(f"/movie/{movie_id}")
 
 @app.route("/add_comment", methods=["POST"])
@@ -253,6 +239,5 @@ def add_comment():
         flash("Kommentti ei voi olla tyhjä")
         return redirect(f"/movie/{movie_id}")
 
-    sql = "INSERT INTO comments (user_id, movie_id, content) VALUES (?, ?, ?)"
-    db.execute(sql, [session["user_id"], movie_id, content])
+    movies.add_comment(session["user_id"], movie_id, content)
     return redirect(f"/movie/{movie_id}")

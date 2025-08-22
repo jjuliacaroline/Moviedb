@@ -122,3 +122,37 @@ def get_movies_by_user(user_id):
         movie['genres'] = get_genres_for_movie(movie['id'])
         movie['avg_rating'] = get_avg_rating_for_movie(movie['id'])
     return movies
+
+def get_comments_for_movie(movie_id):
+    sql = """
+        SELECT c.content, u.username
+        FROM comments c
+        JOIN users u ON c.user_id = u.id
+        WHERE c.movie_id = ?
+        ORDER BY c.created_at DESC
+    """
+    return db.query(sql, [movie_id])
+
+def get_user_rating(user_id, movie_id):
+    sql = "SELECT id FROM ratings WHERE user_id = ? AND movie_id = ?"
+    result = db.query(sql, [user_id, movie_id])
+    return result[0] if result else None
+
+def add_rating(user_id, movie_id, rating):
+    sql = """
+        INSERT INTO ratings (user_id, movie_id, rating)
+        VALUES (?, ?, ?)
+    """
+    db.execute(sql, [user_id, movie_id, rating])
+
+def update_rating(user_id, movie_id, rating):
+    sql = "UPDATE ratings SET rating = ? WHERE user_id = ? AND movie_id = ?"
+    db.execute(sql, [rating, user_id, movie_id])
+
+def delete_rating(user_id, movie_id):
+    sql = "DELETE FROM ratings WHERE user_id = ? AND movie_id = ?"
+    db.execute(sql, [user_id, movie_id])
+
+def add_comment(user_id, movie_id, content):
+    sql = "INSERT INTO comments (user_id, movie_id, content) VALUES (?, ?, ?)"
+    db.execute(sql, [user_id, movie_id, content])
