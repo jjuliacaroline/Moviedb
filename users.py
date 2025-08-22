@@ -21,8 +21,7 @@ def check_login(username, password):
     password_hash = result[0]["password_hash"]
     if check_password_hash(password_hash, password):
         return user_id
-    else:
-        return None
+    return None
 
 def get_user_stats(user_id):
     sql_movies = "SELECT COUNT(*) as count FROM movies WHERE user_id = ?"
