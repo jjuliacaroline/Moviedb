@@ -51,7 +51,6 @@ def show_movie(movie_id):
         comments=comments,
         user_rating=user_rating
     )
-    #return render_template("show_movie.html", movie=movie, genres=genres, ratings=ratings, comments=comments)
 
 @app.route("/find_movie")
 def find_movie():
@@ -61,7 +60,8 @@ def find_movie():
     else:
         query = ""
         results = []
-    return render_template("find_movie.html", query=query, results=results)
+    return render_template("find_movie.html",
+                            query=query, results=results)
 
 @app.route("/new_movie")
 def new_movie():
@@ -103,7 +103,8 @@ def edit_movie(movie_id):
     all_genres = movies.get_all_genres()
     movie_genres = [g["id"] for g in movies.get_genres(movie_id)]
 
-    return render_template("edit_movie.html", movie=movie, all_genres=all_genres, movie_genres=movie_genres)
+    return render_template("edit_movie.html", movie=movie,
+                            all_genres=all_genres, movie_genres=movie_genres)
 
 @app.route("/update_movie", methods=["POST"])
 def update_movie():
