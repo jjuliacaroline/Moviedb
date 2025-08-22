@@ -27,9 +27,9 @@ def get_user_stats(user_id):
     sql_movies = "SELECT COUNT(*) as count FROM movies WHERE user_id = ?"
     movies_count = db.query(sql_movies, [user_id])[0]['count']
 
-    sql_ratings = "SELECT AVG(r.rating) as avg_rating FROM ratings r WHERE r.user_id = ?"
+    sql_ratings = "SELECT ROUND(AVG(r.rating), 2) as avg_rating FROM ratings r WHERE r.user_id = ?"
     avg_rating_res = db.query(sql_ratings, [user_id])
-    avg_rating = round(avg_rating_res[0]['avg_rating'], 2) if avg_rating_res and avg_rating_res[0]['avg_rating'] else None
+    avg_rating = avg_rating_res[0]['avg_rating'] if avg_rating_res and avg_rating_res[0]['avg_rating'] is not None else None
 
     return {
         "movies_count": movies_count,
