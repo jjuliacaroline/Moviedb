@@ -39,7 +39,19 @@ def show_movie(movie_id):
     genres = movies.get_genres(movie_id)
     ratings = movies.get_ratings_for_movie(movie_id)
     comments = movies.get_comments_for_movie(movie_id)
-    return render_template("show_movie.html", movie=movie, genres=genres, ratings=ratings, comments=comments)
+    user_rating = None
+
+    if "user_id" in session:
+        user_rating = movies.get_user_rating(session["user_id"], movie_id)
+    return render_template(
+        "show_movie.html",
+        movie=movie,
+        genres=genres,
+        ratings=ratings,
+        comments=comments,
+        user_rating=user_rating
+    )
+    #return render_template("show_movie.html", movie=movie, genres=genres, ratings=ratings, comments=comments)
 
 @app.route("/find_movie")
 def find_movie():
@@ -182,7 +194,7 @@ def login():
 
         user_id = users.check_login(username, password)
         if user_id:
-            session["user_id"] = user_id
+            session["user_id"] = int(user_id)
             session["username"] = username
             session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
@@ -210,25 +222,13 @@ def user_page(user_id):
 def add_rating():
     require_login()
     check_csrf()
-
-    rating = request.form["rating"]
-    movie_id = request.form["movie_id"]
-
-    if not rating.isdigit() or not movie_id.isdigit():
-        abort(400)
-
-    rating = int(rating)
-    if rating < 1 or rating > 5:
-        abort(400)
-
     user_id = session["user_id"]
-    existing = movies.get_user_rating(user_id, movie_id)
-   
-    if existing:
-        flash("Olet jo arvioinut tämän elokuvan")
-        return redirect(f"/movie/{movie_id}")
+    rating = int(request.form["rating"])
+    movie_id = int(request.form["movie_id"])
 
-    movies.add_rating(user_id, movie_id, rating)
+    existing = movies.get_user_rating(user_id, movie_id)
+    if not existing:
+        movies.add_rating(user_id, movie_id, rating)
     return redirect(f"/movie/{movie_id}")
 
 @app.route("/add_comment", methods=["POST"])
@@ -243,4 +243,23 @@ def add_comment():
         return redirect(f"/movie/{movie_id}")
 
     movies.add_comment(session["user_id"], movie_id, content)
+    return redirect(f"/movie/{movie_id}")
+
+@app.route("/update_rating", methods=["POST"])
+def update_rating_route():
+    require_login()
+    check_csrf()
+    movie_id = request.form["movie_id"]
+    rating = int(request.form["rating"])
+    user_id = session["user_id"]
+    movies.update_rating(user_id, movie_id, rating)
+    return redirect(f"/movie/{movie_id}")
+
+@app.route("/delete_rating", methods=["POST"])
+def delete_rating_route():
+    require_login()
+    check_csrf()
+    movie_id = request.form["movie_id"]
+    user_id = session["user_id"]
+    movies.delete_rating(user_id, movie_id)
     return redirect(f"/movie/{movie_id}")

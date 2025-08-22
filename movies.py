@@ -103,7 +103,7 @@ def find_movies(query):
 
 def get_ratings_for_movie(movie_id):
     sql = """
-        SELECT r.rating, r.user_id, u.username
+        SELECT r.id,r.rating, r.user_id, u.username
         FROM ratings r
         JOIN users u ON r.user_id = u.id
         WHERE r.movie_id = ?
@@ -134,7 +134,7 @@ def get_comments_for_movie(movie_id):
     return db.query(sql, [movie_id])
 
 def get_user_rating(user_id, movie_id):
-    sql = "SELECT id FROM ratings WHERE user_id = ? AND movie_id = ?"
+    sql = "SELECT id, rating FROM ratings WHERE user_id = ? AND movie_id = ?"
     result = db.query(sql, [user_id, movie_id])
     return result[0] if result else None
 
