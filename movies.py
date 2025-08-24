@@ -27,8 +27,8 @@ def get_movies():
     movies = db.query(sql)
 
     for movie in movies:
-        movie['genres'] = get_genres_for_movie(movie['id'])
-        movie['avg_rating'] = get_avg_rating_for_movie(movie['id'])
+        movie["genres"] = get_genres_for_movie(movie["id"])
+        movie["avg_rating"] = get_avg_rating_for_movie(movie["id"])
 
     return movies
 
@@ -43,8 +43,8 @@ def get_movie(movie_id):
     if not result:
         return None
     movie = result[0]
-    movie['genres'] = get_genres_for_movie(movie_id)
-    movie['avg_rating'] = get_avg_rating_for_movie(movie_id)
+    movie["genres"] = get_genres_for_movie(movie_id)
+    movie["avg_rating"] = get_avg_rating_for_movie(movie_id)
     return movie
 
 def get_genres_for_movie(movie_id):
@@ -55,12 +55,12 @@ def get_genres_for_movie(movie_id):
         WHERE mg.movie_id = ?
     """
     rows = db.query(sql, [movie_id])
-    return ", ".join(row['title'] for row in rows) if rows else ""
+    return ", ".join(row["title"] for row in rows) if rows else ""
 
 def get_avg_rating_for_movie(movie_id):
     sql = "SELECT AVG(rating) as avg_rating FROM ratings WHERE movie_id = ?"
     result = db.query(sql, [movie_id])
-    return round(result[0]['avg_rating'], 2) if result and result[0]['avg_rating'] else None
+    return round(result[0]["avg_rating"], 2) if result and result[0]["avg_rating"] else None
 
 def update_movie(movie_id, title, description, release_year, genre_ids):
     sql = "UPDATE movies SET title = ?, description = ?, release_year = ? WHERE id = ?"
@@ -102,8 +102,8 @@ def find_movies(query):
     """
     movies = db.query(sql, [like_query])
     for movie in movies:
-        movie['genres'] = get_genres_for_movie(movie['id'])
-        movie['avg_rating'] = get_avg_rating_for_movie(movie['id'])
+        movie["genres"] = get_genres_for_movie(movie["id"])
+        movie["avg_rating"] = get_avg_rating_for_movie(movie["id"])
     return movies
 
 def get_ratings_for_movie(movie_id):
@@ -124,8 +124,8 @@ def get_movies_by_user(user_id):
     """
     movies = db.query(sql, [user_id])
     for movie in movies:
-        movie['genres'] = get_genres_for_movie(movie['id'])
-        movie['avg_rating'] = get_avg_rating_for_movie(movie['id'])
+        movie["genres"] = get_genres_for_movie(movie["id"])
+        movie["avg_rating"] = get_avg_rating_for_movie(movie["id"])
     return movies
 
 def get_comments_for_movie(movie_id):
