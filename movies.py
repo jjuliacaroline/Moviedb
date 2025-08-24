@@ -33,7 +33,12 @@ def get_movies():
     return movies
 
 def get_movie(movie_id):
-    sql = "SELECT id, title, description, release_year, user_id FROM movies WHERE id = ?"
+    sql = """
+        SELECT m.id, m.title, m.description, m.release_year, m.user_id, u.username
+        FROM movies m
+        LEFT JOIN users u ON m.user_id = u.id
+        WHERE m.id = ?
+    """
     result = db.query(sql, [movie_id])
     if not result:
         return None
